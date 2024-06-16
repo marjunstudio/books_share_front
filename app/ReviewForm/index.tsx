@@ -3,9 +3,10 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 
-import BookResult from "@/components/BookResult";
-import { BookReview } from "@/types/book_reviews";
-import { Book } from "@/types/books";
+import BookResult from "../components/BookResult";
+import { BookReview } from "../types/book_reviews";
+import { Book } from "../types/books";
+
 
 // 
 export interface BookReviewRequest {

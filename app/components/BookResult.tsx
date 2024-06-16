@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Book, BookFeatchData } from "@/types/books";
+import { Book, BookFeatchData } from "../types/books";
 
 // TODO:型定義ファイルに移行する
 interface BookResultProps {
