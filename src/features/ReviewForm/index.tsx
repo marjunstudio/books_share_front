@@ -1,26 +1,40 @@
 "use client"; 
 
-import BookResult from "@/components/BookResult";
 import React, { useState } from "react";
 
-const ReviewForm: React.FC = () => {
-	const [inputValue, setInputValue] = useState("");
-	const [books, setBooks] = useState([]);
-	const [selectedBook, setSelectedBook] = useState<{ id: string; title: string; description?: string } | null>(null);
+import BookResult from "@/components/BookResult";
+import { BookReview } from "@/types/book_reviews";
+import { Book } from "@/types/books";
 
-	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setInputValue(e.target.value);
+// 
+export interface BookReviewRequest {
+	book: Book;
+	book_review: BookReview
+}
+
+const ReviewForm: React.FC = () => {
+	const [inputTitle, setInputTitle] = useState("");
+	const [contentValue, setContentValue] = useState("");
+	const [books, setBooks] = useState([]);
+	const [selectedBook, setSelectedBook] = useState<{ book: Book } | null>(null);
+
+
+	const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		setInputTitle(e.target.value);
 	};
 
+	const handleContentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		setContentValue(e.target.value);
+	};
 
-	const handleButtonClick = async (inputValue: string) => {
+	const handleButtonClick = async (inputTitle: string) => {
 		try {
 			const response = await fetch('http://localhost:8000/v1/books', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
 				},
-				body: JSON.stringify({ title: inputValue }),
+				body: JSON.stringify({ title: inputTitle }),
 			});
 	
 			const data = await response.json();
@@ -31,21 +45,59 @@ const ReviewForm: React.FC = () => {
 		}
 	};
 
+	// 検索ボタン押下時の処理
 	const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
 		e.preventDefault();
-		handleButtonClick(inputValue);
+		handleButtonClick(inputTitle);
 	};
 
-	const handleBookClick = (book: { id: string; title: string; description?: string }) => {
+	// 表示された書籍押下時の処理
+	const handleBookClick = (book: Book) => {
 		setSelectedBook(book);
-		setInputValue(book.title);
+		setInputTitle(book.title);
 		console.log(selectedBook);
-		
+	};
+
+	// 書籍レビュー保存処理
+	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+		e.preventDefault();
+
+		if (!selectedBook) {
+			console.error("No book selected");
+			return;
+		}
+
+		const formData: BookReviewRequest = {
+			book: selectedBook,
+			book_review: {
+				content: contentValue,
+				book_id: selectedBook.id,
+			},
+		};
+
+		try {
+			const response = await fetch("http://localhost:8000/book_reviews", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(formData),
+			});
+
+			if (!response.ok) {
+				throw new Error("Network response was not ok");
+			}
+
+			const data = await response.json();
+			console.log("Response:", data);
+		} catch (error) {
+			console.error("Error:", error);
+		}
 	};
 	
 
 return (
-	<form className="w-2/3 mx-auto space-y-12">
+	<form onSubmit={handleSubmit} className="w-2/3 mx-auto space-y-12">
 		<fieldset className="p-6 rounded-md shadow-sm bg-gray-50">
 			<div className="flex items-center mb-10">
 				<div className="w-full">
@@ -54,9 +106,9 @@ return (
 					id="book"
 					type="text"
 					placeholder="書籍名"
-					value={inputValue}
+					value={inputTitle}
 					className="w-full rounded-md focus:ring focus:ring-opacity-75 text-gray-900 focus:ring-violet-600 border-gray-300"
-					onChange={handleInputChange}
+					onChange={handleTitleChange}
 					/>
 				</div>
 				<button
@@ -66,7 +118,6 @@ return (
 				>
 				検索
 				</button>
-
 			</div>
 			<div>
 				<table className="table">
@@ -93,7 +144,16 @@ return (
 				type="text"
 				placeholder="文章"
 				className="w-full rounded-md focus:ring focus:ring-opacity-75 text-gray-900 focus:ring-violet-600 border-gray-300"
+				onChange={handleContentChange}
 				/>
+			</div>
+			<div className="flex justify-end">
+				<button
+					type="submit"
+					className="px-6 py-2 font-semibold rounded-full bg-blue-600 text-white"
+					>
+					書籍情報を送信
+				</button>
 			</div>
 		</fieldset>
 	</form>

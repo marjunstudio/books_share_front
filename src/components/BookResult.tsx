@@ -1,31 +1,30 @@
-import React, { useState } from "react";
+import React from "react";
+
+import { Book, BookFeatchData } from "@/types/books";
 
 // TODO:型定義ファイルに移行する
 interface BookResultProps {
-    book: {
-        volumeInfo: {
-            title: string;
-            description: string;
-            imageLinks?: {
-                smallThumbnail?: string;
-            };
-            publishedDate: string;
-            pageCount: number;
-        };
-    };
-    onBookClick: (title: string) => void;
+    book: BookFeatchData
+    onBookClick: (book: Book) => void;
 }
 
 const BookResult: React.FC<BookResultProps> = ({ book, onBookClick }) => {
     return (
         <tr 
-            onClick={() => onBookClick({ id: book.id, title: book.volumeInfo.title, description: book.volumeInfo.description, published_date: book.volumeInfo.publishedDate, page_count: book.volumeInfo.pageCount })} 
+            onClick={() => onBookClick({
+                id: book.id, 
+                title: book.volumeInfo.title, 
+                description: book.volumeInfo.description,
+                published_date: book.volumeInfo.publishedDate,
+                page_count: book.volumeInfo.pageCount,
+                thumbnail: book.volumeInfo.imageLinks.thumbnail
+            })} 
             className="cursor-pointer hover:bg-gray-100"
         >
         <td>
-            {book.volumeInfo.imageLinks?.smallThumbnail && (
+            {book.volumeInfo.imageLinks?.thumbnail && (
             <img
-                src={book.volumeInfo.imageLinks.smallThumbnail}
+                src={book.volumeInfo.imageLinks.thumbnail}
                 alt={book.volumeInfo.title}
                 className="mb-2 size-11/12"
             />
