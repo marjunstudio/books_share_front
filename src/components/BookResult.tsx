@@ -9,16 +9,20 @@ interface BookResultProps {
 }
 
 const BookResult: React.FC<BookResultProps> = ({ book, onBookClick }) => {
+    const handleClick = () => {
+        onBookClick({
+            id: book.id, 
+            title: book.volumeInfo.title, 
+            description: book.volumeInfo.description,
+            published_date: book.volumeInfo.publishedDate,
+            page_count: book.volumeInfo.pageCount,
+            thumbnail: book.volumeInfo.imageLinks.thumbnail
+        });
+    };
+
     return (
         <tr 
-            onClick={() => onBookClick({
-                id: book.id, 
-                title: book.volumeInfo.title, 
-                description: book.volumeInfo.description,
-                published_date: book.volumeInfo.publishedDate,
-                page_count: book.volumeInfo.pageCount,
-                thumbnail: book.volumeInfo.imageLinks.thumbnail
-            })} 
+            onClick={handleClick}
             className="cursor-pointer hover:bg-gray-100"
         >
         <td>

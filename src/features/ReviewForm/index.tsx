@@ -1,6 +1,7 @@
 "use client"; 
 
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 
 import BookResult from "@/components/BookResult";
 import { BookReview } from "@/types/book_reviews";
@@ -18,6 +19,7 @@ const ReviewForm: React.FC = () => {
 	const [books, setBooks] = useState([]);
 	const [selectedBook, setSelectedBook] = useState<{ book: Book } | null>(null);
 
+	const router = useRouter();
 
 	const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setInputTitle(e.target.value);
@@ -55,6 +57,7 @@ const ReviewForm: React.FC = () => {
 	const handleBookClick = (book: Book) => {
 		setSelectedBook(book);
 		setInputTitle(book.title);
+		console.log("Selecte Book:", book);
 		console.log(selectedBook);
 	};
 
@@ -74,6 +77,8 @@ const ReviewForm: React.FC = () => {
 				book_id: selectedBook.id,
 			},
 		};
+		console.log(formData);
+		
 
 		try {
 			const response = await fetch("http://localhost:8000/book_reviews", {
@@ -90,6 +95,7 @@ const ReviewForm: React.FC = () => {
 
 			const data = await response.json();
 			console.log("Response:", data);
+			router.push("/review_list")
 		} catch (error) {
 			console.error("Error:", error);
 		}
