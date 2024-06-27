@@ -1,4 +1,7 @@
+"use client";
+
 import React from "react"
+import GoogleAuthButton from "../../Button/GoogleAuthButton"
 
 const Header: React.FC = () => {
   return(
@@ -20,7 +23,8 @@ const Header: React.FC = () => {
             </li>
           </ul>
           <div className="items-center flex-shrink-0 hidden lg:flex">
-            <button className="self-center px-8 py-3 rounded">ログイン</button>
+            {/* TODO:ボタンをコンポーネント化する */}
+            <GoogleAuthButton />
             <button className="self-center px-8 py-3 font-semibold rounded bg-purple-600 text-gray-50">新規登録</button>
           </div>
           <button className="p-4 lg:hidden">
@@ -33,6 +37,5 @@ const Header: React.FC = () => {
     </>
   )
 }
-
 
 export default Header
